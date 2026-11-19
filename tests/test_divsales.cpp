@@ -96,5 +96,30 @@ destination = destination;
 
 std::cout << "After self-assignment: " << destination[0] << '\n';
 
+std::cout << "\nTEST 7: Static corporate sales total\n";
+
+DivSales::resetCorporateSales();
+
+DivSales salesA(2);
+salesA[0] = 100000.00;
+salesA[1] = 200000.00;
+
+DivSales::addCorporateSales(salesA.getTotalSales());
+
+std::cout << "Original total: " << DivSales::getCorporateSales() << '\n';
+
+// Copying must not create additional corporate sales
+DivSales salesB(salesA);
+
+std::cout << "After copy construction: " << DivSales::getCorporateSales() << '\n';
+
+// Assignment must not create additional corporate sales
+DivSales salesC(4);
+salesC = salesA;
+
+std::cout << "After copy assignment: " << DivSales::getCorporateSales() << '\n';
+
+DivSales::resetCorporateSales();
+
 return 0;
 }
