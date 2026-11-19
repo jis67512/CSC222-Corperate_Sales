@@ -50,7 +50,47 @@ try
 }
 catch (const std::out_of_range& error)
 {
-    std::cout << "Upper-bound error: " << error.what() << '\n';
+std::cout << "Upper-bound error: " << error.what() << '\n';
 }
+std::cout << "\nTEST 5: Copy constructor\n";
+
+DivSales original(4);
+original[0] = 125000.00;
+
+DivSales copied(original);
+
+std::cout << "Original: " << original[0] << '\n';
+std::cout << "Copy: " << copied[0] << '\n';
+
+copied[0] = 200000.00;
+
+std::cout << "After changing copy:\n";
+std::cout << "Original: " << original[0] << '\n';
+std::cout << "Copy: " << copied[0] << '\n';
+
+std::cout << "\nTEST 6: Copy assignment\n";
+
+DivSales source(4);
+source[0] = 125000.00;
+
+DivSales destination(12);
+
+destination = source;
+
+std::cout << "Destination periods: " << destination.getNumberOfPeriods() << '\n';
+
+std::cout << "Source value: " << source[0] << '\n';
+std::cout << "Destination value: " << destination[0] << '\n';
+
+destination[0] = 200000.00;
+
+std::cout << "After changing destination:\n";
+std::cout << "Source: " << source[0] << '\n';
+std::cout << "Destination: " << destination[0] << '\n';
+
+// Test self-assignment
+destination = destination;
+
+std::cout << "After self-assignment: " << destination[0] << '\n';
     return 0;
 }
