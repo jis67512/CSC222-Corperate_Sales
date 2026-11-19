@@ -89,3 +89,37 @@ DivSales& DivSales::operator=(const DivSales& other)
 
     return *this;
 }
+
+double DivSales::getTotalSales() const
+{
+    double total = 0.0;
+
+    for (int i = 0; i < numberOfPeriods; i++)
+    {
+        total += sales[i];
+    }
+
+    return total;
+}
+
+void DivSales::resetCorporateSales()
+{
+    corporateSales = 0.0;
+}
+
+void DivSales::addCorporateSales(double total)
+{
+    if (total <= 0.0)
+    {
+        throw std::invalid_argument(
+            "Division total must be positive"
+        );
+    }
+
+    corporateSales += total;
+}
+
+double DivSales::getCorporateSales()
+{
+    return corporateSales;
+}

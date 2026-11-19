@@ -1,8 +1,11 @@
 #include <iostream>
+#include <iomanip>
+#include <string>
 #include <stdexcept>
 #include "DivSales.h"
+#include <fstream>
 
-int main()
+int main(int argc, char* argv[])
 {
     std::cout << "TEST 1: Valid constructor\n";
 
@@ -92,5 +95,111 @@ std::cout << "Destination: " << destination[0] << '\n';
 destination = destination;
 
 std::cout << "After self-assignment: " << destination[0] << '\n';
-    return 0;
+
+std::cout << "\nTEST 7: Corporate Sales file input\n";
+
+std::string filename =
+    argc > 1
+        ? argv[1]
+        : "Corporate_Sales_Quarterly_Test_Data.txt";
+
+std::ifstream inputFile(filename);
+std::cout << "Loading file: " << filename << '\n';
+
+if (!inputFile)
+{
+    std::cerr << "Error opening sales file.\n";
+    return 1;
+}
+
+int numberOfPeriods;
+
+if (!(inputFile >> numberOfPeriods) || numberOfPeriods <= 0)
+{
+    std::cerr << "Invalid number of sales periods.\n";
+    return 1;
+}
+
+std::cout << "Number of periods: " << numberOfPeriods << '\n';
+
+const int NUM_DIVISIONS = 6;
+
+DivSales divisions[NUM_DIVISIONS] =
+{
+    DivSales(numberOfPeriods),
+    DivSales(numberOfPeriods),
+    DivSales(numberOfPeriods),
+    DivSales(numberOfPeriods),
+    DivSales(numberOfPeriods),
+    DivSales(numberOfPeriods)
+};
+
+DivSales::resetCorporateSales();
+
+std::cout << std::fixed << std::setprecision(2);
+
+// Load and validate the sales values
+for (int division = 0; division < NUM_DIVISIONS; division++)
+{
+    for (int period = 0; period < numberOfPeriods; period++)
+    {
+        if (!(inputFile >> divisions[division][period]) ||
+            divisions[division][period] <= 0.0)
+        {
+            std::cerr << "Invalid or missing sales data.\n";
+            DivSales::resetCorporateSales();
+            return 1;
+        }
+    }
+} // Closes the outer division loop
+
+// Check for unexpected extra data
+std::string extraValue;
+
+if (inputFile >> extraValue)
+{
+    std::cerr << "Error: Unexpected extra sales data.\n";
+    DivSales::resetCorporateSales();
+    return 1;
+}
+
+// Now calculate totals after validation succeeds
+for (int division = 0; division < NUM_DIVISIONS; division++)
+{
+    double divisionTotal =
+        divisions[division].getTotalSales();
+
+    DivSales::addCorporateSales(divisionTotal);
+
+    std::cout << "Division " << division + 1 << " total: $" << divisionTotal << '\n';
+}
+
+// Display the corporate total
+std::cout << "Corporate total: $" << DivSales::getCorporateSales() << '\n';
+
+// Display every sales period
+std::cout << "\nSales by Period\n";
+
+std::cout << std::left << std::setw(10) << "Period";
+
+for (int d = 0; d < NUM_DIVISIONS; d++)
+{
+    std::cout << std::right << std::setw(15) << ("Division " + std::to_string(d + 1));
+}
+
+std::cout << '\n';
+
+for (int p = 0; p < numberOfPeriods; p++)
+{
+    std::cout << std::left << std::setw(10) << p + 1;
+
+    for (int d = 0; d < NUM_DIVISIONS; d++)
+    {
+        std::cout << std::right << std::setw(15) << divisions[d][p];
+    }
+
+    std::cout << '\n';
+}
+
+return 0;
 }
