@@ -25,3 +25,23 @@ DivSales::~DivSales()
 {
     delete[] sales;
 }
+
+double& DivSales::operator[](int index)
+{
+    if (index < 0 || index >= numberOfPeriods)
+    {
+        throw std::out_of_range("Invalid sales array index");
+    }
+
+    return sales[index];
+}
+
+const double& DivSales::operator[](int index) const
+{
+    if (index < 0 || index >= numberOfPeriods)
+    {
+        throw std::out_of_range("Invalid sales array index");
+    }
+
+    return sales[index];
+}
